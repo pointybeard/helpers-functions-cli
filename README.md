@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.0.0
--   Date: May 08 2019
+-   Version: v1.0.1
+-   Date: May 09 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -24,7 +24,7 @@ To include all the [PHP Helpers](https://github.com/pointybeard/helpers) package
 
 ## Usage
 
-This library is a collection convenience function for common tasks relating to bitwise flags. They are included by the vendor autoloader automatically. The functions have a namespace of `pointybeard\Helpers\Functions\Cli`
+This library is a collection convenience function for command-line tasks. They are included by the vendor autoloader automatically. The functions have a namespace of `pointybeard\Helpers\Functions\Cli`
 
 The following functions are provided:
 
