@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.0.1
--   Date: May 09 2019
+-   Version: v1.1.0
+-   Date: May 20 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -9,7 +9,7 @@ A collection of functions relating to the command-line
 
 ## Installation
 
-This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/helpers-functions-cli` or add `"pointybeard/helpers-functions-cli": "~1.0"` to your `composer.json` file.
+This library is installed via [Composer](http://getcomposer.org/). To install, use `composer require pointybeard/helpers-functions-cli` or add `"pointybeard/helpers-functions-cli": "~1.1"` to your `composer.json` file.
 
 And run composer to update your dependencies:
 
@@ -18,9 +18,9 @@ And run composer to update your dependencies:
 
 ### Requirements
 
-There are no particuar requirements for this library other than PHP 5.6 or greater.
+This library makes use of the [PHP Helpers: Command-line Input and Input Type Handlers](https://github.com/pointybeard/helpers-cli-input), [PHP Helpers: Flag Functions](https://github.com/pointybeard/helpers-functions-flags) (`pointybeard/helpers-functions-flags`) and [PHP Helpers: String Functions](https://github.com/pointybeard/helpers-functions-strings) packages. They are installed automatically via composer.
 
-To include all the [PHP Helpers](https://github.com/pointybeard/helpers) packages on your project, use `composer require pointybeard/helpers` or add `"pointybeard/helpers": "~1.0"` to your composer file.
+To include all the [PHP Helpers](https://github.com/pointybeard/helpers) packages on your project, use `composer require pointybeard/helpers` or add `"pointybeard/helpers": "~1.1"` to your composer file.
 
 ## Usage
 
@@ -30,14 +30,18 @@ The following functions are provided:
 
 -   `can_invoke_bash() : bool`
 -   `is_su() : bool`
+-   `usage(string $name, Cli\Input\InputCollection $collection) : string`
+-   `manpage(string $name, string $version, string $description, string $example, Cli\Input\InputCollection $collection): string`
 
 Example usage:
 
 ```php
 <?php
 
-include __DIR__ . '/vendor/autoload.php';
+declare(strict_types=1);
+include __DIR__.'/vendor/autoload.php';
 
+use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Functions\Cli;
 
 var_dump(Cli\can_invoke_bash());
@@ -45,6 +49,50 @@ var_dump(Cli\can_invoke_bash());
 
 var_dump(Cli\is_su());
 // bool(false)
+
+echo Cli\manpage(
+    'test',
+    '1.0.0',
+    'A simple test command',
+    'php -f test.php -- import -vvv -d test.json',
+    (new Input\InputCollection())
+        ->append(new Input\Types\Argument(
+            'action',
+            Input\AbstractInputType::FLAG_REQUIRED,
+            'The name of the action to perform'
+        ))
+        ->append(new Input\Types\Option(
+            'v',
+            null,
+            Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_TYPE_INCREMENTING,
+            'verbosity level. -v (errors only), -vv (warnings and errors), -vvv (everything).',
+            null,
+            0
+        ))
+        ->append(new Input\Types\Option(
+            'd',
+            'data',
+            Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED,
+            'Path to the input JSON data'
+        ))
+).PHP_EOL;
+
+// test 1.0.0, A simple test command
+// Usage: test [OPTIONS]... ACTION...
+//
+// Mandatory values for long options are mandatory for short options too.
+//
+// Arguments:
+//   ACTION              The name of the action to perform
+//
+// Options:
+//   -v                                  verbosity level. -v (errors only), -vv (warnings
+//                                       and errors), -vvv (everything).
+//   -d, --data=VALUE                    Path to the input JSON data
+//
+// Examples:
+//   php -f test.php -- import -vvv -d test.json
+
 ```
 
 ## Support
