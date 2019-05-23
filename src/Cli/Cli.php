@@ -102,3 +102,13 @@ Examples:
     );
     }
 }
+
+if (!function_exists(__NAMESPACE__.'get_window_size')) {
+    function get_window_size(): array
+    {
+        return [
+            'cols' => exec('tput cols'),
+            'lines' => exec('tput lines'),
+        ];
+    }
+}
