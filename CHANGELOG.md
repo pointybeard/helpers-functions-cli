@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 **View all [Unreleased][] changes here**
 
+## [1.1.2][]
+#### Changed
+- Using latest version of `pointybeard/helpers-functions-strings`
+
 ## [1.1.1][]
 #### Added
 -   Added `get_window_size()` function

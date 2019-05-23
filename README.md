@@ -1,6 +1,6 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.1
+-   Version: v1.1.2
 -   Date: May 23 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
