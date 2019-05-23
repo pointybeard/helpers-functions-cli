@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 **View all [Unreleased][] changes here**
 
+## [1.1.1][]
+#### Added
+-   Added `get_window_size()` function
+
 ## [1.1.0][]
 #### Added
 -   Added `manpage` and `usage` functions
@@ -17,5 +21,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 -   Initial release
 
-[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.0...integration
+[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.1...integration
+[1.1.1]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/pointybeard/helpers-functions-cli/compare/1.0.0...1.1.0

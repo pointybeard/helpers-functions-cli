@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.0
--   Date: May 20 2019
+-   Version: v1.1.1
+-   Date: May 23 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -32,6 +32,7 @@ The following functions are provided:
 -   `is_su() : bool`
 -   `usage(string $name, Cli\Input\InputCollection $collection) : string`
 -   `manpage(string $name, string $version, string $description, string $example, Cli\Input\InputCollection $collection): string`
+-   `get_window_size(): array`
 
 Example usage:
 
@@ -49,6 +50,12 @@ var_dump(Cli\can_invoke_bash());
 
 var_dump(Cli\is_su());
 // bool(false)
+
+var_dump(Cli\get_window_size());
+// array(2) {
+//   'cols' => string(3) "103"
+//   'lines' => string(2) "68"
+// }
 
 echo Cli\manpage(
     'test',
