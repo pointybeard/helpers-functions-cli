@@ -42,7 +42,7 @@ if (!function_exists(__NAMESPACE__.'usage')) {
     function usage(string $name, Input\InputCollection $collection): string
     {
         $arguments = [];
-        foreach ($collection->getArguments() as $a) {
+        foreach ($collection->getItemsByType('Argument') as $a) {
             $arguments[] = strtoupper(
                 // Wrap with square brackets if it's not required
                 Flags\is_flag_set(Input\AbstractInputType::FLAG_OPTIONAL, $a->flags()) ||
@@ -102,12 +102,17 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
         $arguments = [];
         $options = [];
 
-        foreach ($collection->getArguments() as $a) {
+        foreach ($collection->getItemsByType("Argument") as $a) {
             $arguments[] = (string) $a;
         }
 
-        foreach ($collection->getOptions() as $o) {
-            $options[] = (string) $o;
+        foreach($collection->getTypes() as $type) {
+            if($type == 'Argument') {
+                continue;
+            }
+            foreach ($collection->getItemsByType($type) as $o) {
+                $options[] = (string) $o;
+            }
         }
 
         // Add the arguments, if there are any.
