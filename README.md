@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.2
--   Date: May 23 2019
+-   Version: v1.1.3
+-   Date: May 24 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -18,9 +18,9 @@ And run composer to update your dependencies:
 
 ### Requirements
 
-This library makes use of the [PHP Helpers: Command-line Input and Input Type Handlers](https://github.com/pointybeard/helpers-cli-input), [PHP Helpers: Flag Functions](https://github.com/pointybeard/helpers-functions-flags) (`pointybeard/helpers-functions-flags`) and [PHP Helpers: String Functions](https://github.com/pointybeard/helpers-functions-strings) packages. They are installed automatically via composer.
+This library makes use of the [PHP Helpers: Command-line Input and Input Type Handlers](https://github.com/pointybeard/helpers-cli-input), [PHP Helpers: Flag Functions](https://github.com/pointybeard/helpers-functions-flags) (`pointybeard/helpers-functions-flags`), [PHP Helpers: Command-line Colour](https://github.com/pointybeard/helpers-cli-colours) (`pointybeard/helpers-cli-colours`) and [PHP Helpers: String Functions](https://github.com/pointybeard/helpers-functions-strings) packages. They are installed automatically via composer.
 
-To include all the [PHP Helpers](https://github.com/pointybeard/helpers) packages on your project, use `composer require pointybeard/helpers` or add `"pointybeard/helpers": "~1.1"` to your composer file.
+To include all the [PHP Helpers](https://github.com/pointybeard/helpers) packages on your project, use `composer require pointybeard/helpers` or add `"pointybeard/helpers": "~1"` to your composer file.
 
 ## Usage
 
@@ -43,6 +43,7 @@ declare(strict_types=1);
 include __DIR__.'/vendor/autoload.php';
 
 use pointybeard\Helpers\Cli\Input;
+use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Functions\Cli;
 
 var_dump(Cli\can_invoke_bash());
@@ -60,13 +61,12 @@ var_dump(Cli\get_window_size());
 echo Cli\manpage(
     'test',
     '1.0.0',
-    'A simple test command',
-    'php -f test.php -- import -vvv -d test.json',
+    'A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window',
     (new Input\InputCollection())
         ->append(new Input\Types\Argument(
             'action',
             Input\AbstractInputType::FLAG_REQUIRED,
-            'The name of the action to perform'
+            'The name of the action to perform. This is an intentionally very long argument description so we can check that word wrapping is working correctly'
         ))
         ->append(new Input\Types\Option(
             'v',
@@ -80,25 +80,30 @@ echo Cli\manpage(
             'd',
             'data',
             Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED,
-            'Path to the input JSON data'
-        ))
+            'Path to the input JSON data.'
+        )),
+    Colour::FG_GREEN,
+    Colour::FG_WHITE,
+    [
+        'Examples' => 'php -f test.php -- import -vvv -d test.json'
+    ]
 ).PHP_EOL;
 
-// test 1.0.0, A simple test command
+// test 1.0.0, A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window
 // Usage: test [OPTIONS]... ACTION...
 //
-// Mandatory values for long options are mandatory for short options too.
-//
 // Arguments:
-//   ACTION              The name of the action to perform
+// ACTION              The name of the action to perform. This is an
+//                     intentionally very long argument description so we can check
+//                     that word wrapping is working correctly
 //
 // Options:
-//   -v                                  verbosity level. -v (errors only), -vv (warnings
-//                                       and errors), -vvv (everything).
-//   -d, --data=VALUE                    Path to the input JSON data
+// -v                            verbosity level. -v (errors only), -vv
+//                               (warnings and errors), -vvv (everything).
+// -d, --data=VALUE              Path to the input JSON data.
 //
 // Examples:
-//   php -f test.php -- import -vvv -d test.json
+// php -f test.php -- import -vvv -d test.json
 
 ```
 

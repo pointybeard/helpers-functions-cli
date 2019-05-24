@@ -5,9 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 **View all [Unreleased][] changes here**
 
+## [1.1.3][]
+#### Changed
+-   Updated `manpage()` to include `foregroundColour`, `headingColour`, and `additional` arguments. Removed `example` argument in favour of including it inside `additional`.
+-   Added `pointybeard/helpers-cli-colour` composer package
+
 ## [1.1.2][]
 #### Changed
-- Using latest version of `pointybeard/helpers-functions-strings`
+-   Using latest version of `pointybeard/helpers-functions-strings`
 
 ## [1.1.1][]
 #### Added
@@ -25,6 +30,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 -   Initial release
 
-[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.1...integration
+[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.3...integration
+[1.1.3]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/pointybeard/helpers-functions-cli/compare/1.0.0...1.1.0
