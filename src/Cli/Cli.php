@@ -62,22 +62,23 @@ if (!function_exists(__NAMESPACE__.'usage')) {
     }
 }
 
-if (!function_exists(__NAMESPACE__.'manpage')) {
-    function manpage(string $name, string $version, string $description, Input\InputCollection $collection, $foregroundColour=Colour\Colour::FG_DEFAULT, $headingColour=Colour\Colour::FG_WHITE, array $additional=[]): string
+/**
+ * Uses tput to find out the size of the window (columns and lines)
+ * @return array an array containing exactly 2 items: 'cols' and 'lines'
+ */
+if (!function_exists(__NAMESPACE__.'get_window_size')) {
+    function get_window_size(): array
     {
-        $arguments = $options = [];
+        return [
+            'cols' => exec('tput cols'),
+            'lines' => exec('tput lines'),
+        ];
+    }
+}
 
-        foreach ($collection->getArguments() as $a) {
-            $arguments[] = (string) $a;
-        }
-
-        foreach ($collection->getOptions() as $o) {
-            $options[] = (string) $o;
-        }
-
-        $arguments = implode($arguments, PHP_EOL);
-        $options = implode($options, PHP_EOL);
-
+if (!function_exists(__NAMESPACE__.'manpage')) {
+    function manpage(string $name, string $version, string $description, Input\InputCollection $collection, $foregroundColour=Colour\Colour::FG_DEFAULT, $headingColour=Colour\Colour::FG_WHITE, array $additionalSections=[]): string
+    {
         // Convienence function for wrapping a heading with colour
         $heading = function(string $input) use ($headingColour) {
             return Colour\Colour::colourise($input, $headingColour);
@@ -87,6 +88,7 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
         $colourise = function(string $input) use ($foregroundColour) {
             return Colour\Colour::colourise($input, $foregroundColour);
         };
+
         $sections = [
             $colourise(sprintf(
                 "%s %s, %s\r\n%s\r\n",
@@ -95,27 +97,37 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
                 $description,
                 usage($name, $collection)
             )),
-            $heading('Arguments:'),
-            $colourise($arguments) . PHP_EOL,
-            $heading('Options:'),
-            $colourise($options) . PHP_EOL
         ];
 
-        foreach($additional as $name => $contents) {
+        $arguments = [];
+        $options = [];
+
+        foreach ($collection->getArguments() as $a) {
+            $arguments[] = (string) $a;
+        }
+
+        foreach ($collection->getOptions() as $o) {
+            $options[] = (string) $o;
+        }
+
+        // Add the arguments, if there are any.
+        if(false === empty($arguments)){
+            $sections[] = $heading("Arguments:");
+            $sections[] = $colourise(implode($arguments, PHP_EOL)) . PHP_EOL;
+        }
+
+        // Add the options, if there are any.
+        if(false === empty($options)){
+            $sections[] = $heading("Options:");
+            $sections[] = $colourise(implode($options, PHP_EOL)) . PHP_EOL;
+        }
+
+        // Iterate over all additional items and add them as new sections
+        foreach($additionalSections as $name => $contents) {
             $sections[] = $heading("{$name}:");
             $sections[] = $colourise($contents) . PHP_EOL;
         }
 
         return implode($sections, PHP_EOL);
-    }
-}
-
-if (!function_exists(__NAMESPACE__.'get_window_size')) {
-    function get_window_size(): array
-    {
-        return [
-            'cols' => exec('tput cols'),
-            'lines' => exec('tput lines'),
-        ];
     }
 }
