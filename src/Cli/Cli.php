@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace pointybeard\Helpers\Functions\Cli;
 
 use pointybeard\Helpers\Cli\Input;
+use pointybeard\Helpers\Cli\Colour;
 use pointybeard\Helpers\Functions\Flags;
 use pointybeard\Helpers\Functions\Strings;
 
@@ -62,7 +63,7 @@ if (!function_exists(__NAMESPACE__.'usage')) {
 }
 
 if (!function_exists(__NAMESPACE__.'manpage')) {
-    function manpage(string $name, string $version, string $description, string $example, Input\InputCollection $collection): string
+    function manpage(string $name, string $version, string $description, Input\InputCollection $collection, $foregroundColour=Colour\Colour::FG_DEFAULT, $headingColour=Colour\Colour::FG_WHITE, array $additional=[]): string
     {
         $arguments = $options = [];
 
@@ -74,32 +75,38 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
             $options[] = (string) $o;
         }
 
-        $arguments = implode($arguments, PHP_EOL.'  ');
-        $options = implode($options, PHP_EOL.'  ');
+        $arguments = implode($arguments, PHP_EOL);
+        $options = implode($options, PHP_EOL);
 
-        return sprintf(
-            '%s %s, %s
-%s
+        // Convienence function for wrapping a heading with colour
+        $heading = function(string $input) use ($headingColour) {
+            return Colour\Colour::colourise($input, $headingColour);
+        };
 
-Mandatory values for long options are mandatory for short options too.
+        // Convienence function for wrapping input in a specified colour
+        $colourise = function(string $input) use ($foregroundColour) {
+            return Colour\Colour::colourise($input, $foregroundColour);
+        };
+        $sections = [
+            $colourise(sprintf(
+                "%s %s, %s\r\n%s\r\n",
+                $name,
+                $version,
+                $description,
+                usage($name, $collection)
+            )),
+            $heading('Arguments:'),
+            $colourise($arguments) . PHP_EOL,
+            $heading('Options:'),
+            $colourise($options) . PHP_EOL
+        ];
 
-Arguments:
-  %s
+        foreach($additional as $name => $contents) {
+            $sections[] = $heading("{$name}:");
+            $sections[] = $colourise($contents) . PHP_EOL;
+        }
 
-Options:
-  %s
-
-Examples:
-  %s
-',
-            $name,
-            $version,
-            Strings\utf8_wordwrap($description),
-            usage($name, $collection),
-            $arguments,
-            $options,
-            $example
-    );
+        return implode($sections, PHP_EOL);
     }
 }
 
