@@ -1,6 +1,6 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.4
+-   Version: v1.1.5
 -   Date: May 24 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
@@ -60,32 +60,45 @@ var_dump(Cli\get_window_size());
 
 echo Cli\manpage(
     'test',
-    '1.0.0',
+    '1.0.1',
     'A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window',
     (new Input\InputCollection())
-        ->append(new Input\Types\Argument(
-            'action',
-            Input\AbstractInputType::FLAG_REQUIRED,
-            'The name of the action to perform. This is an intentionally very long argument description so we can check that word wrapping is working correctly'
-        ))
-        ->append(new Input\Types\Option(
-            'v',
-            null,
-            Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_TYPE_INCREMENTING,
-            'verbosity level. -v (errors only), -vv (warnings and errors), -vvv (everything).',
-            null,
-            0
-        ))
-        ->append(new Input\Types\Option(
-            'd',
-            'data',
-            Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED,
-            'Path to the input JSON data.'
-        )),
+        ->append(
+            Input\InputTypeFactory::build('Argument')
+                ->name('action')
+                ->flags(Input\AbstractInputType::FLAG_REQUIRED)
+                ->description('The name of the action to perform. This is an intentionally very long argument description so we can check that word wrapping is working correctly')
+        )
+        ->append(
+            Input\InputTypeFactory::build('IncrementingFlag')
+                ->name('v')
+                ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_TYPE_INCREMENTING)
+                ->description('verbosity level. -v (errors only), -vv (warnings and errors), -vvv (everything).')
+                ->validator(new Input\Validator(
+                    function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
+                        // Make sure verbosity level never goes above 3
+                        return min(3, (int)$context->find('v'));
+                    }
+                ))
+        )
+        ->append(
+            Input\InputTypeFactory::build('Option')
+                ->name('P')
+                ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_OPTIONAL)
+                ->description('Port to use for all connections.')
+                ->default('3306')
+        )
+        ->append(
+            Input\InputTypeFactory::build('LongOption')
+                ->name('data')
+                ->short('d')
+                ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_REQUIRED)
+                ->description('Path to the input JSON data.')
+        ),
     Colour::FG_GREEN,
     Colour::FG_WHITE,
     [
-        'Examples' => 'php -f test.php -- import -vvv -d test.json'
+        'Examples' => 'php -f test.php -- import -vvv -d test.json',
     ]
 ).PHP_EOL;
 
@@ -100,6 +113,7 @@ echo Cli\manpage(
 // Options:
 // -v                            verbosity level. -v (errors only), -vv
 //                               (warnings and errors), -vvv (everything).
+// -P                            Port to use for all connections.
 // -d, --data=VALUE              Path to the input JSON data.
 //
 // Examples:

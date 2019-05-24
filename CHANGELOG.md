@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 **View all [Unreleased][] changes here**
 
+## [1.1.5][]
+#### Changed
+-   Updated to work with `pointybeard/helpers-cli-input` v1.1.x
+
 ## [1.1.4][]
 #### Changed
 -   Refactoring of `manpage()` to hide 'Options' and/or 'Arguments' if there are none to show.
@@ -34,7 +38,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 -   Initial release
 
-[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.4...integration
+[Unreleased]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.5...integration
+[1.1.5]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.5...1.1.5
 [1.1.4]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.3...1.1.4
 [1.1.3]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.2...1.1.3
 [1.1.2]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.1...1.1.2
