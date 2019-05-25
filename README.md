@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.5
--   Date: May 24 2019
+-   Version: v1.1.6
+-   Date: May 25 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -33,6 +33,7 @@ The following functions are provided:
 -   `usage(string $name, Cli\Input\InputCollection $collection) : string`
 -   `manpage(string $name, string $version, string $description, Input\InputCollection $collection, $foregroundColour=Colour\Colour::FG_DEFAULT, $headingColour=Colour\Colour::FG_WHITE, array $additional=[]): string`
 -   `get_window_size(): array`
+-   `display_error_and_exit($message, $heading = 'Error', $background = Colour\Colour::BG_RED): void`
 
 Example usage:
 
@@ -77,7 +78,7 @@ echo Cli\manpage(
                 ->validator(new Input\Validator(
                     function (Input\AbstractInputType $input, Input\AbstractInputHandler $context) {
                         // Make sure verbosity level never goes above 3
-                        return min(3, (int)$context->find('v'));
+                        return min(3, (int) $context->find('v'));
                     }
                 ))
         )
@@ -118,6 +119,10 @@ echo Cli\manpage(
 //
 // Examples:
 // php -f test.php -- import -vvv -d test.json
+
+Cli\display_error_and_exit('Looks like something went wrong!', 'Fatal Error');
+// Fatal Error
+// Looks like something went wrong!
 
 ```
 
