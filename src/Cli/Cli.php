@@ -9,6 +9,7 @@ use pointybeard\Helpers\Cli\Colour;
 use pointybeard\Helpers\Functions\Flags;
 use pointybeard\Helpers\Functions\Strings;
 use pointybeard\Helpers\Functions\Arrays;
+use pointybeard\Helpers\Functions\Debug;
 
 /*
  * Checks if bash can be invoked.
@@ -139,7 +140,7 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
 }
 
 if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
-    function display_error_and_exit($message, $heading = 'Error', $background = Colour\Colour::BG_RED): void
+    function display_error_and_exit($message, $heading = 'Error', $background = Colour\Colour::BG_RED, ?array $trace = null): void
     {
         $padCharacter = ' ';
         $paddingBufferSize = 0.15; // 15%
@@ -147,17 +148,7 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
         $edgePaddingLength = 5;
         $edgePadding = str_repeat($padCharacter, $edgePaddingLength);
 
-        // Get the window dimensions but restrict width to minimum
-        // of $minimumWindowWidth
-        $window = get_window_size();
-        $window['cols'] = max($minimumWindowWidth, $window['cols']);
-
-        // This shrinks the total line length (derived by the window width) by
-        // $paddingBufferSize
-        $paddingBuffer = (int) ceil($window['cols'] * $paddingBufferSize);
-
-        $lineLength = $window['cols'] - (2 * $edgePaddingLength) - $paddingBuffer;
-
+        // Convenience function for adding the background to a line.
         $add_background = function (string $string, bool $bold = false) use ($padCharacter, $edgePadding, $background): string {
             $string = $edgePadding.$string.$edgePadding;
 
@@ -171,6 +162,17 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
                 $background
             );
         };
+
+        // Get the window dimensions but restrict width to minimum
+        // of $minimumWindowWidth
+        $window = get_window_size();
+        $window['cols'] = max($minimumWindowWidth, $window['cols']);
+
+        // This shrinks the total line length (derived by the window width) by
+        // $paddingBufferSize
+        $paddingBuffer = (int) ceil($window['cols'] * $paddingBufferSize);
+
+        $lineLength = $window['cols'] - (2 * $edgePaddingLength) - $paddingBuffer;
 
         $emptyLine = $add_background(str_repeat($padCharacter, $lineLength), true);
         $heading = Strings\mb_str_pad(trim($heading), $lineLength, $padCharacter, \STR_PAD_RIGHT);
@@ -186,20 +188,8 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
         // Reset array indicies
         $message = array_values($message);
 
-        // Check for a backtrace and get it's index if there is one. Trace
-        // will most likely have been provided by the
-        // Helpers\Exceptions\ReadableTrace\ReadableTraceException
-        $traceArrayIndex = array_search('Trace', $message);
-        if (false !== $traceArrayIndex) {
-            // Purely cosmetic; add a new line before the trace starts
-            $message[$traceArrayIndex] = PHP_EOL.$message[$traceArrayIndex];
-        }
-
-        // Wrap everything (except the trace) in red
+        // Wrap everything in red
         for ($ii = 0; $ii < count($message); ++$ii) {
-            if (false !== $traceArrayIndex && $ii == $traceArrayIndex) {
-                break;
-            }
             $message[$ii] = $add_background(Strings\mb_str_pad(
                 $message[$ii],
                 mb_strlen($heading),
@@ -208,22 +198,18 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
             ));
         }
 
-        // Add an empty red line before the trace (or at the end if there
-        // is no trace)
-        Arrays\array_insert_at_index(
-            $message,
-            false !== $traceArrayIndex
-                ? $traceArrayIndex
-                : count($message),
-            $emptyLine
-        );
+        // Add an empty red line at the end
+        array_push($message, $emptyLine);
 
         // Print the error message, starting with an empty red line
         printf(
-            "\r\n%s\r\n%s\r\n%s\r\n",
+            "\r\n%s\r\n%s\r\n%s\r\n%s",
             $emptyLine,
             $add_background($heading, true),
-            implode($message, PHP_EOL)
+            implode($message, PHP_EOL),
+            !empty($trace) && count($trace) > 0
+                ? PHP_EOL . sprintf("Trace\r\n==========\r\n%s\r\n", Debug\readable_debug_backtrace($trace))
+                : ''
         );
 
         exit(1);
