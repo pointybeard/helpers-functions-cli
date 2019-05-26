@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 **View all [Unreleased][] changes here**
 
+## [1.1.7][]
+#### Added
+-   Added `pointybeard/helpers-functions-debug` package
+
+#### Changed
+-   Using `readable_debug_backtrace()` (provided by `pointybeard/helpers-functions-debug`) in `display_error_and_exit()` to produce a trace if one is provided
+
 ## [1.1.6][]
 #### Added
 -   Added `display_error_and_exit` function

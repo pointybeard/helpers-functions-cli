@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.6
--   Date: May 25 2019
+-   Version: v1.1.7
+-   Date: May 26 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -28,12 +28,12 @@ This library is a collection convenience function for command-line tasks. They a
 
 The following functions are provided:
 
--   `can_invoke_bash() : bool`
--   `is_su() : bool`
--   `usage(string $name, Cli\Input\InputCollection $collection) : string`
--   `manpage(string $name, string $version, string $description, Input\InputCollection $collection, $foregroundColour=Colour\Colour::FG_DEFAULT, $headingColour=Colour\Colour::FG_WHITE, array $additional=[]): string`
--   `get_window_size(): array`
--   `display_error_and_exit($message, $heading = 'Error', $background = Colour\Colour::BG_RED): void`
+-   `can_invoke_bash()`
+-   `is_su()`
+-   `usage()`
+-   `manpage()`
+-   `get_window_size()`
+-   `display_error_and_exit()`
 
 Example usage:
 
