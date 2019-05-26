@@ -18,7 +18,8 @@
         "pointybeard/helpers-cli-colour": "~1",
         "pointybeard/helpers-functions-strings": "~1.1",
         "pointybeard/helpers-functions-flags": "~1",
-        "pointybeard/helpers-functions-arrays": "~1"
+        "pointybeard/helpers-functions-arrays": "~1",
+        "pointybeard/helpers-functions-debug": "~1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8"
