@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.7
--   Date: May 26 2019
+-   Version: v1.1.8
+-   Date: June 01 2019
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -61,16 +61,16 @@ var_dump(Cli\get_window_size());
 
 echo Cli\manpage(
     'test',
-    '1.0.1',
+    '1.0.2',
     'A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window',
     (new Input\InputCollection())
-        ->append(
+        ->add(
             Input\InputTypeFactory::build('Argument')
                 ->name('action')
                 ->flags(Input\AbstractInputType::FLAG_REQUIRED)
                 ->description('The name of the action to perform. This is an intentionally very long argument description so we can check that word wrapping is working correctly')
         )
-        ->append(
+        ->add(
             Input\InputTypeFactory::build('IncrementingFlag')
                 ->name('v')
                 ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_TYPE_INCREMENTING)
@@ -82,14 +82,14 @@ echo Cli\manpage(
                     }
                 ))
         )
-        ->append(
+        ->add(
             Input\InputTypeFactory::build('Option')
                 ->name('P')
                 ->flags(Input\AbstractInputType::FLAG_OPTIONAL | Input\AbstractInputType::FLAG_VALUE_OPTIONAL)
                 ->description('Port to use for all connections.')
                 ->default('3306')
         )
-        ->append(
+        ->add(
             Input\InputTypeFactory::build('LongOption')
                 ->name('data')
                 ->short('d')
@@ -103,17 +103,17 @@ echo Cli\manpage(
     ]
 ).PHP_EOL;
 
-// test 1.0.0, A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window
+// test 1.0.2, A simple test command with a really long description. This is an intentionally very long argument description so we can check that word wrapping is working correctly. It should wrap to the window
 // Usage: test [OPTIONS]... ACTION...
 //
 // Arguments:
-// ACTION              The name of the action to perform. This is an
-//                     intentionally very long argument description so we can check
-//                     that word wrapping is working correctly
+// ACTION              The name of the action to perform. This is an intentionally very
+//                     long argument description so we can check that word wrapping is
+//                     working correctly
 //
 // Options:
-// -v                            verbosity level. -v (errors only), -vv
-//                               (warnings and errors), -vvv (everything).
+// -v                            verbosity level. -v (errors only), -vv (warnings and errors),
+//                               -vvv (everything).
 // -P                            Port to use for all connections.
 // -d, --data=VALUE              Path to the input JSON data.
 //
