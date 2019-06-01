@@ -108,13 +108,8 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
             $arguments[] = (string) $a;
         }
 
-        foreach ($collection->getTypes() as $type) {
-            if ('Argument' == $type) {
-                continue;
-            }
-            foreach ($collection->getItemsByType($type) as $o) {
-                $options[] = (string) $o;
-            }
+        foreach ($collection->getItemsExcludeByType('Argument') as $o) {
+            $options[] = (string) $o;
         }
 
         // Add the arguments, if there are any.
@@ -208,7 +203,7 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
             $add_background($heading, true),
             implode($message, PHP_EOL),
             !empty($trace) && count($trace) > 0
-                ? PHP_EOL . sprintf("Trace\r\n==========\r\n%s\r\n", Debug\readable_debug_backtrace($trace))
+                ? PHP_EOL.sprintf("Trace\r\n==========\r\n%s\r\n", Debug\readable_debug_backtrace($trace))
                 : ''
         );
 
