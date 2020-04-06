@@ -210,3 +210,54 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
         exit(1);
     }
 }
+
+/*
+ * Uses proc_open() to run a command on the shell. Output and errors are captured
+ * and returned. If the command "fails" to run (i.e. return code is != 0), this
+ * function will throw an exception.
+ *
+ * Note that some commands will return a non-zero status code to signify, for
+ * example, no results found. This function is unable to tell the difference and
+ * will trigger an exception regardless. In this instance, It is advised to trap
+ * that exception and inspect both $stderr and $stdout to decide if it was
+ * actually due to failed command execution.
+ *
+ * @param string $command the full bash command to run
+ * @param string $stdout  (optional) reference to capture output from STDOUT
+ * @param string $stderr  (optional) reference to capture output from STDERR
+ *
+ * @throws RunCommandFailedException
+ */
+if (!function_exists(__NAMESPACE__.'\run_command')) {
+    function run_command(string $command, string &$stdout = null, string &$stderr = null): void
+    {
+        $pipes = null;
+        $return = null;
+
+        $proc = proc_open(
+            $command,
+            [
+                ['pipe', 'r'],  // STDIN
+                ['pipe', 'w'],  // STDOUT
+                ['pipe', 'w'],  // STDERR
+            ],
+            $pipes,
+            getcwd(),
+            null
+        );
+
+        if (true == is_resource($proc)) {
+            $stdout = trim(stream_get_contents($pipes[1]));
+            $stderr = trim(stream_get_contents($pipes[2]));
+
+            // Check the return code. If it's not 0, then the command failed.
+            if (0 != proc_close($proc)) {
+                throw new Exceptions\RunCommandFailedException($command, (string) $stderr);
+            }
+        } else {
+            // Something went horribly wrong with proc_open(). This should
+            // nearly never happen, but, accounting for it regardless.
+            throw new Exceptions\RunCommandFailedException($command, 'proc_open() returned FALSE');
+        }
+    }
+}
