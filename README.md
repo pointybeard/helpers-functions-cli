@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.8
--   Date: June 01 2019
+-   Version: v1.1.9
+-   Date: April 06 2020
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -30,6 +30,7 @@ The following functions are provided:
 
 -   `can_invoke_bash()`
 -   `is_su()`
+-   `run_command()`
 -   `usage()`
 -   `manpage()`
 -   `get_window_size()`
@@ -58,6 +59,19 @@ var_dump(Cli\get_window_size());
 //   'cols' => string(3) "103"
 //   'lines' => string(2) "68"
 // }
+
+Cli\run_command("date", $out);
+var_dump($out);
+// string(29) "Mon  6 Apr 17:20:29 AEST 2020"
+
+try{
+    Cli\run_command("not -a --command", $out, $err);
+} catch(Cli\Exceptions\RunCommandFailedException $ex) {
+    var_dump($ex->getMessage(), $ex->getCommand(), $ex->getError());
+}
+// string(54) "Failed to run command. Returned: sh: 1: not: not found"
+// string(16) "not -a --command"
+// string(21) "sh: 1: not: not found"
 
 echo Cli\manpage(
     'test',
@@ -128,8 +142,7 @@ Cli\display_error_and_exit('Looks like something went wrong!', 'Fatal Error');
 
 ## Support
 
-If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/pointybeard/helpers-functions-cli/issues),
-or better yet, fork the library and submit a pull request.
+If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/pointybeard/helpers-functions-cli/issues), or better yet, fork the library and submit a pull request.
 
 ## Contributing
 

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.9][]
+#### Added
+-   Added `run_command()` function
+-   Added `RunCommandFailedException` exception
+-   Added `pointybeard/helpers-exceptions-readabletrace` package
+
 ## [1.1.8][]
 #### Changed
 -   Updated `manpage()` to work with `pointybeard/helpers-cli-input` 1.2
@@ -53,6 +59,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 #### Added
 -   Initial release
 
+[1.1.9]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.8...1.1.9
 [1.1.8]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.7...1.1.8
 [1.1.7]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.6...1.1.7
 [1.1.6]: https://github.com/pointybeard/helpers-functions-cli/compare/1.1.5...1.1.6
