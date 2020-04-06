@@ -18,7 +18,8 @@
         "pointybeard/helpers-functions-strings": "~1.1",
         "pointybeard/helpers-functions-flags": "~1.0",
         "pointybeard/helpers-functions-arrays": "~1.0",
-        "pointybeard/helpers-functions-debug": "~1.0"
+        "pointybeard/helpers-functions-debug": "~1.0",
+        "pointybeard/helpers-exceptions-readabletrace": "~1.0.0"
     },
     "support": {
         "issues": "https://github.com/pointybeard/helpers-functions-cli/issues",
@@ -26,6 +27,9 @@
     },
     "minimum-stability": "stable",
     "autoload": {
+        "psr-4": {
+            "pointybeard\\Helpers\\Functions\\": "src/"
+        },
         "files": [
             "src/Cli/Cli.php"
         ]
