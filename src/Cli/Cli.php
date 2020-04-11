@@ -201,7 +201,7 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
             "\r\n%s\r\n%s\r\n%s\r\n%s",
             $emptyLine,
             $add_background($heading, true),
-            implode($message, PHP_EOL),
+            implode(PHP_EOL, $message),
             !empty($trace) && count($trace) > 0
                 ? PHP_EOL.sprintf("Trace\r\n==========\r\n%s\r\n", Debug\readable_debug_backtrace($trace))
                 : ''
