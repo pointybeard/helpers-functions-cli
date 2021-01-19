@@ -67,7 +67,7 @@ if (!function_exists(__NAMESPACE__.'usage')) {
                     : $a->name()
             );
         }
-        $arguments = trim(implode($arguments, ' '));
+        $arguments = trim(implode(' ', $arguments));
 
         return sprintf(
             'Usage: %s [OPTIONS]... %s%s',
