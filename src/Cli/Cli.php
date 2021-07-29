@@ -2,14 +2,115 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "PHP Helpers: Command-line Functions" repository.
+ *
+ * Copyright 2019-2021 Alannah Kearney <hi@alannahkearney.com>
+ *
+ * For the full copyright and license information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
+
 namespace pointybeard\Helpers\Functions\Cli;
 
-use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Cli\Colour;
-use pointybeard\Helpers\Functions\Flags;
-use pointybeard\Helpers\Functions\Strings;
+use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Functions\Arrays;
 use pointybeard\Helpers\Functions\Debug;
+use pointybeard\Helpers\Functions\Flags;
+use pointybeard\Helpers\Functions\Strings;
+
+/*
+ * Uses proc_open() to run a command on the shell. Output and errors are captured
+ * and returned. If the command "fails" to run (i.e. return code is != 0), this
+ * function will throw an exception.
+ *
+ * Note that some commands will return a non-zero status code to signify, for
+ * example, no results found. This function is unable to tell the difference and
+ * will trigger an exception regardless. In this instance, It is advised to trap
+ * that exception and inspect both $stderr and $stdout to decide if it was
+ * actually due to failed command execution.
+ *
+ * @param string $command the full bash command to run
+ * @param string $stdout  (optional) reference to capture output from STDOUT
+ * @param string $stderr  (optional) reference to capture output from STDERR
+ * #param string $exitCode (options) reference to capture the command exit code
+ *
+ * @throws RunCommandFailedException
+ */
+if (!function_exists(__NAMESPACE__.'\run_command')) {
+    function run_command(string $command, string &$stdout = null, string &$stderr = null, int &$exitCode = null): void
+    {
+        $pipes = null;
+        $exitCode = null;
+
+        $proc = proc_open(
+            "{$command};echo $? >&3",
+            [
+                0 => ['pipe', 'r'], // STDIN
+                1 => ['pipe', 'w'], // STDOUT
+                2 => ['pipe', 'w'], // STDERR
+                3 => ['pipe', 'w'], // Used to capture the exit code
+            ],
+            $pipes,
+            getcwd(),
+            null
+        );
+
+        // Close STDIN stream
+        fclose($pipes[0]);
+
+        // (guard) proc_open failed to return a resource
+        if (false == is_resource($proc)) {
+            throw new Exceptions\RunCommandFailedException($command, 'proc_open() returned FALSE.');
+        }
+
+        // Get contents of STDOUT and close stream
+        $stdout = trim(stream_get_contents($pipes[1]));
+        fclose($pipes[1]);
+
+        // Get contents od STDERR and close stream
+        $stderr = trim(stream_get_contents($pipes[2]));
+        fclose($pipes[2]);
+
+        // Grab the exit code then close the stream
+        if (false == feof($pipes[3])) {
+            $exitCode = (int) trim(stream_get_contents($pipes[3]));
+        }
+        fclose($pipes[3]);
+
+        // Close the process we created
+        proc_close($proc);
+
+        // (guard) proc_close return indiciated a failure
+        if (0 != $exitCode) {
+            // There was some kind of error. Throw an exception.
+            // If STDERR is empty, in effort to give back something
+            // meaningful, grab contents of STDOUT instead
+            throw new Exceptions\RunCommandFailedException($command, true == empty(trim($stderr)) ? $stdout : $stderr);
+        }
+    }
+}
+
+/*
+ * Returns the pathname for a specified command (or null if it cannot be found)
+ *
+ * @params $command the name of the command to look for
+ *
+ * @returns string|null
+ */
+if (!function_exists(__NAMESPACE__.'\which')) {
+    function which(string $command): ?string
+    {
+        try {
+            run_command("which {$command}", $output);
+        } catch (Exception $ex) {
+            $output = null;
+        }
+
+        return $output;
+    }
+}
 
 /*
  * Checks if bash can be invoked.
@@ -144,7 +245,7 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
         $edgePadding = str_repeat($padCharacter, $edgePaddingLength);
 
         // Convenience function for adding the background to a line.
-        $add_background = function (string $string, bool $bold = false) use ($padCharacter, $edgePadding, $background): string {
+        $add_background = function (string $string, bool $bold = false) use ($edgePadding, $background): string {
             $string = $edgePadding.$string.$edgePadding;
 
             return Colour\Colour::colourise(
@@ -208,56 +309,5 @@ if (!function_exists(__NAMESPACE__."\display_error_and_exit")) {
         );
 
         exit(1);
-    }
-}
-
-/*
- * Uses proc_open() to run a command on the shell. Output and errors are captured
- * and returned. If the command "fails" to run (i.e. return code is != 0), this
- * function will throw an exception.
- *
- * Note that some commands will return a non-zero status code to signify, for
- * example, no results found. This function is unable to tell the difference and
- * will trigger an exception regardless. In this instance, It is advised to trap
- * that exception and inspect both $stderr and $stdout to decide if it was
- * actually due to failed command execution.
- *
- * @param string $command the full bash command to run
- * @param string $stdout  (optional) reference to capture output from STDOUT
- * @param string $stderr  (optional) reference to capture output from STDERR
- *
- * @throws RunCommandFailedException
- */
-if (!function_exists(__NAMESPACE__.'\run_command')) {
-    function run_command(string $command, string &$stdout = null, string &$stderr = null): void
-    {
-        $pipes = null;
-        $return = null;
-
-        $proc = proc_open(
-            $command,
-            [
-                ['pipe', 'r'],  // STDIN
-                ['pipe', 'w'],  // STDOUT
-                ['pipe', 'w'],  // STDERR
-            ],
-            $pipes,
-            getcwd(),
-            null
-        );
-
-        if (true == is_resource($proc)) {
-            $stdout = trim(stream_get_contents($pipes[1]));
-            $stderr = trim(stream_get_contents($pipes[2]));
-
-            // Check the return code. If it's not 0, then the command failed.
-            if (0 != proc_close($proc)) {
-                throw new Exceptions\RunCommandFailedException($command, (string) $stderr);
-            }
-        } else {
-            // Something went horribly wrong with proc_open(). This should
-            // nearly never happen, but, accounting for it regardless.
-            throw new Exceptions\RunCommandFailedException($command, 'proc_open() returned FALSE');
-        }
     }
 }
