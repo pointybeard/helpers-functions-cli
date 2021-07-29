@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Functions
 
--   Version: v1.1.9
--   Date: April 06 2020
+-   Version: v1.1.10
+-   Date: July 29 2021
 -   [Release notes](https://github.com/pointybeard/helpers-functions-cli/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-functions-cli)
 
@@ -28,6 +28,8 @@ This library is a collection convenience function for command-line tasks. They a
 
 The following functions are provided:
 
+-   `run_command()`
+-   `which()`
 -   `can_invoke_bash()`
 -   `is_su()`
 -   `run_command()`
@@ -47,6 +49,9 @@ include __DIR__.'/vendor/autoload.php';
 use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Cli\Colour\Colour;
 use pointybeard\Helpers\Functions\Cli;
+
+var_dump(Cli\which("ls"));
+// string(11) "/usr/bin/ls"
 
 var_dump(Cli\can_invoke_bash());
 // bool(true)
