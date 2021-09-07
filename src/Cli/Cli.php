@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace pointybeard\Helpers\Functions\Cli;
 
+use Exception;
 use pointybeard\Helpers\Cli\Colour;
 use pointybeard\Helpers\Cli\Input;
 use pointybeard\Helpers\Functions\Arrays;
