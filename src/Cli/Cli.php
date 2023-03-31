@@ -169,7 +169,7 @@ if (!function_exists(__NAMESPACE__.'usage')) {
                     : $a->name()
             );
         }
-        $arguments = trim(implode($arguments, ' '));
+        $arguments = trim(implode(' ', $arguments));
 
         return sprintf(
             'Usage: %s [OPTIONS]... %s%s',
@@ -217,13 +217,13 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
         // Add the arguments, if there are any.
         if (false === empty($arguments)) {
             $sections[] = $heading('Arguments:');
-            $sections[] = $colourise(implode($arguments, PHP_EOL)).PHP_EOL;
+            $sections[] = $colourise(implode(PHP_EOL, $arguments)).PHP_EOL;
         }
 
         // Add the options, if there are any.
         if (false === empty($options)) {
             $sections[] = $heading('Options:');
-            $sections[] = $colourise(implode($options, PHP_EOL)).PHP_EOL;
+            $sections[] = $colourise(implode(PHP_EOL, $options)).PHP_EOL;
         }
 
         // Iterate over all additional items and add them as new sections
@@ -232,7 +232,7 @@ if (!function_exists(__NAMESPACE__.'manpage')) {
             $sections[] = $colourise($contents).PHP_EOL;
         }
 
-        return implode($sections, PHP_EOL);
+        return implode(PHP_EOL, $sections);
     }
 }
 
